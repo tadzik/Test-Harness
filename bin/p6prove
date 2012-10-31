@@ -1,0 +1,42 @@
+use lib 'blib/lib';
+use Test::Harness;
+
+sub MAIN(*@files is copy, :$e = 'perl6') {
+    my %results;
+    my $start = time;
+
+    sub summary {
+        my $files  = +%results.keys;
+        my $tests  = [+] %results.values.map({ .tests-ran });
+        my $passes = [+] %results.values.map({ .tests-passed });
+        my $result = $tests == $passes ?? 'PASS' !! 'FAIL';
+        my $secs   = time - $start;
+        say "Files=$files, Tests=$tests, $secs wallclock secs";
+        say "Result: $result";
+    }
+
+    while +@files {
+        my $f = @files.shift;
+        if $f.IO.d {
+            @files.push(dir($f).grep({ ~$_ !~~ /^ '.'/})\
+                               .map({ $_.path }));
+            next;
+        }
+        my $th = Test::Harness::File.new;
+        print "$f ... ";
+        my @lines = lines(qqx[$e $f]);
+        for @lines {
+            $th.line($_)
+        }
+        %results{$f} = $th;
+        say $th.short-summary;
+    }
+
+    if all(%results.values.map({ .successful })) {
+        say "All tests successful."
+    } else {
+        say "\nTest Summary Report";
+        say '-------------------';
+    }
+    summary();
+}

@@ -52,4 +52,13 @@ class Test::Harness::File {
             $!tests-passed++;
         }
     }
+
+    method short-summary {
+        if $.tests-planned == $.tests-passed {
+            return 'ok';
+        } else {
+            return "Failed {$.tests-planned - $.tests-passed}"
+                ~ "/{$.tests-planned} subtests";
+        }
+    }
 }
