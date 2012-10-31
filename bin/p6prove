@@ -1,7 +1,7 @@
 use lib 'blib/lib';
 use Test::Harness;
 
-sub MAIN(*@files is copy, :$e = 'perl6') {
+sub MAIN(*@files is copy, :$e = 'perl6', Bool :$Q) {
     my %results;
     my $start = time;
 
@@ -23,20 +23,28 @@ sub MAIN(*@files is copy, :$e = 'perl6') {
             next;
         }
         my $th = Test::Harness::File.new;
-        print "$f ... ";
+        print "$f ... " unless $Q;
         my @lines = lines(qqx[$e $f]);
         for @lines {
             $th.line($_)
         }
         %results{$f} = $th;
-        say $th.short-summary;
+        say $th.short-summary unless $Q;
+    }
+
+    unless $Q {
+        if all(%results.values.map({ .successful })) {
+            say "All tests successful."
+        } else {
+            say "\nTest Summary Report";
+            say '-------------------';
+        }
+        summary();
     }
 
     if all(%results.values.map({ .successful })) {
-        say "All tests successful."
+        exit 0;
     } else {
-        say "\nTest Summary Report";
-        say '-------------------';
+        exit 1;
     }
-    summary();
 }
