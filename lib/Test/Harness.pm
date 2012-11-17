@@ -61,4 +61,8 @@ class Test::Harness::File {
                 ~ "/{$.tests-planned} subtests";
         }
     }
+
+    method successful {
+        $.tests-planned = $.tests-passed
+    }
 }
