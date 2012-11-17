@@ -63,6 +63,6 @@ class Test::Harness::File {
     }
 
     method successful {
-        $.tests-planned = $.tests-passed
+        $.tests-planned == $.tests-passed
     }
 }
