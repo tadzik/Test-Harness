@@ -35,15 +35,16 @@ class Test::Harness::File {
         unless $/ {
             die "Malformed TAP output"
         }
+
         $!tests-ran++;
         if ~$<num> ne '' and +$<num> != $!tests-ran {
             die "Wrong test number"
         }
         if ~$<todo> ne '' {
             $!todos++;
+            $!tests-passed++;
             if ~$<fail> eq '' {
                 $!todos-passed++;
-                $!tests-passed++;
             }
         } elsif ~$<skip> ne '' {
             $!tests-skipped++;
@@ -54,15 +55,15 @@ class Test::Harness::File {
     }
 
     method short-summary {
-        if $.tests-planned == $.tests-passed {
+        if self.successful {
             return 'ok';
         } else {
-            return "Failed {$.tests-planned - $.tests-passed}"
-                ~ "/{$.tests-planned} subtests";
+            return "Failed {$!tests-ran - $!tests-passed}"
+                ~ "/{$!tests-ran} subtests";
         }
     }
 
     method successful {
-        $.tests-planned == $.tests-passed
+        $!tests-ran == $!tests-passed
     }
 }
