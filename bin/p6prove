@@ -23,6 +23,7 @@ sub MAIN(*@files is copy, :$e = 'perl6', Bool :$Q) {
                                .map({ $_.path }));
             next;
         }
+        next unless $f ~~ /'.t' $/;
         my $th = Test::Harness::File.new;
         print "$f ... " unless $Q;
         my @lines = lines(qqx[$e $f]);
