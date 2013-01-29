@@ -1,7 +1,7 @@
 use v6;
 use Test;
 use Test::Harness;
-plan 38;
+plan 39;
 
 my $h = Test::Harness::File.new;
 $h.line('1..15');
@@ -82,3 +82,7 @@ is $h.tests-skipped, 4;
 is $h.successful, True, 'it went okay';
 
 dies_ok { $h.line('ok foo bar #dupa') }, 'malformed TAP';
+
+$h = Test::Harness::File.new;
+lives_ok { $h.line("ok 1 - JSON string «{}» parsed") },
+         'does not fail on funny characters';
