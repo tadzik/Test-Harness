@@ -5,6 +5,7 @@ use Test::Harness;
 sub MAIN(*@files is copy, :$e = 'perl6', Bool :$Q) {
     my %results;
     my $start = time;
+    +@files or @files = 't';
 
     sub summary {
         my $files  = +%results.keys;
