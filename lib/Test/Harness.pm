@@ -64,6 +64,9 @@ class Test::Harness::File {
     }
 
     method successful {
-        $!tests-ran == $!tests-passed
+        all($!tests-planned > 0,
+            $!tests-planned == $!tests-ran,
+            $!tests-ran == $!tests-passed
+        ).so
     }
 }
