@@ -40,16 +40,16 @@ class Test::Harness::File {
         if ~$<num> ne '' and +$<num> != $!tests-ran {
             die "Wrong test number"
         }
-        if ~$<todo> ne '' {
+        if $<todo> and ~$<todo> ne '' {
             $!todos++;
             $!tests-passed++;
             if ~$<fail> eq '' {
                 $!todos-passed++;
             }
-        } elsif ~$<skip> ne '' {
+        } elsif $<skip> and ~$<skip> ne '' {
             $!tests-skipped++;
             $!tests-passed++;
-        } elsif ~$<fail> eq '' {
+        } elsif $<fail> and ~$<fail> eq '' {
             $!tests-passed++;
         }
     }
